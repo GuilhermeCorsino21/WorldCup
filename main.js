@@ -302,7 +302,7 @@ const main = () => {
     if (teamOneScore === teamTwoScore) {
       `${team1} ${(teamOneScore += equalScoreTeamOne)} : ${(teamTwoScore +=
         equalScoreTeamTwo)} ${team2}`;
-      console.log("Empate");
+      console.log("Jogo Empatado! Resultado Dos Pênaltis:");
 
       if (teamOneScore > teamTwoScore) {
         eliminationGroup.push(team1);
