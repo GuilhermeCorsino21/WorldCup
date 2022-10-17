@@ -10,14 +10,14 @@ const main = () => {
   let penalsTeamOne;
   let penalsTeamTwo;
 
-  let GrupaA = [];
-  let GrupaB = [];
-  let GrupaC = [];
-  let GrupaD = [];
-  let GrupaE = [];
-  let GrupaF = [];
-  let GrupaG = [];
-  let GrupaH = [];
+  let GroupA = [];
+  let GroupB = [];
+  let GroupC = [];
+  let GroupD = [];
+  let GroupE = [];
+  let GroupF = [];
+  let GroupG = [];
+  let GroupH = [];
 
   const allGroup = [];
 
@@ -34,7 +34,7 @@ const main = () => {
 
   let eliminationGroupOne = [];
   let eliminationGroupTwo = [];
-  let quaterFinalOne = [];
+  let quarterFinalOne = [];
   let quaterFinalTwo = [];
   let finalGameTeams = [];
   let winner = [];
@@ -75,15 +75,372 @@ const main = () => {
   let suica = { teamName: "Suiça", teamRange: 13 };
   let japao = { teamName: "Japão", teamRange: 26 };
 
-  GrupaA.push(croacia, uruguai, gana, marrocos);
-  GrupaB.push(costa, arabia, canada, franca);
-  GrupaC.push(dinamarca, alemanha, australia, estados);
-  GrupaD.push(servia, coreia, belgica, iran);
-  GrupaE.push(senegal, polonia, holanda, portugal);
-  GrupaF.push(brasil, equador, paisde, qatar);
-  GrupaG.push(camaroes, espanha, tunisia, inglaterra);
-  GrupaH.push(argentina, mexico, suica, japao);
+  GroupA.push(croacia, uruguai, gana, marrocos);
+  GroupB.push(costa, arabia, canada, franca);
+  GroupC.push(dinamarca, alemanha, australia, estados);
+  GroupD.push(servia, coreia, belgica, iran);
+  GroupE.push(senegal, polonia, holanda, portugal);
+  GroupF.push(brasil, equador, paisde, qatar);
+  GroupG.push(camaroes, espanha, tunisia, inglaterra);
+  GroupH.push(argentina, mexico, suica, japao);
 
-  allGroup.push(GrupaA, GrupaB, GrupaC, GrupaD, GrupaE, GrupaF, GrupaG, GrupaH);
+  allGroup.push(GroupA, GroupB, GroupC, GroupD, GroupE, GroupF, GroupG, GroupH);
+
+  let showGroupTable = function (group) {
+    for (let teams of Object.values(group)) {
+      let {
+        teamName: name,
+        teamRange: range,
+        wins: wins,
+        draw: draw,
+        derrota: derrota,
+        golsFeitos: golsFeitos,
+        golsSofridos: golsSofridos,
+        pontos: pontos,
+      } = teams;
+      console.table(
+        `${name} (${range})  ${wins} ${draw} ${derrota} ${golsFeitos}:${golsSofridos} ${pontos}`
+      );
+    }
+  };
+
+  let addTeamProperties = function (group) {
+    return group.forEach(function (team) {
+      team.wins = 0;
+      team.draw = 0;
+      team.derrota = 0;
+      team.golsFeitos = 0;
+      team.golsSofridos = 0;
+      team.pontos = 0;
+    });
+  };
+  
+  let giveProperty = function (...allGroup) {
+    allGroup.forEach((groups) => {
+      groups.forEach((teams) => addTeamProperties(teams));
+    });
+  };
+  giveProperty(allGroup);
+
+  let goals = function (team1, team2, team3, team4) {
+    team1.golsFeitos += teamOneScore;
+    team1.golsSofridos += teamTwoScore;
+    team2.golsFeitos += teamTwoScore;
+    team2.golsSofridos += teamOneScore;
+
+    team1.pontos = team1.wins;
+    team2.pontos = team2.wins;
+
+    team1.pontos *= 3;
+    team2.pontos *= 3;
+
+    if (team1.draw > 0) team1.pontos += team1.draw;
+    if (team2.draw > 0) team2.pontos += team2.draw;
+
+    team3.golsFeitos += teamThreeScore;
+    team3.golsSofridos += teamFourScore;
+    team4.golsFeitos += teamFourScore;
+    team4.golsSofridos += teamThreeScore;
+
+    team3.pontos = team3.wins;
+    team4.pontos = team4.wins;
+
+    team3.pontos *= 3;
+    team4.pontos *= 3;
+
+    if (team3.draw > 0) team3.pontos += team3.draw;
+    if (team4.draw > 0) team4.pontos += team4.draw;
+  };
+
+  let game = function (team1, team2, team3, team4, group) {
+    teamOneScore = Math.floor(Math.random() * 6);
+    teamTwoScore = Math.floor(Math.random() * 6);
+    teamThreeScore = Math.floor(Math.random() * 6);
+    teamFourScore = Math.floor(Math.random() * 6);
+
+    gameOne = `${team1.teamName} ${teamOneScore} : ${teamTwoScore} ${team2.teamName}`;
+    gameTwo = `${team3.teamName} ${teamThreeScore} : ${teamFourScore} ${team4.teamName}`;
+
+    if (teamOneScore > teamTwoScore) {
+      team1.wins++;
+      team2.derrota++;
+    } else if (teamOneScore === teamTwoScore) {
+      team1.draw++;
+      team2.draw++;
+    } else {
+      team2.wins++;
+      team1.derrota++;
+    }
+    if (teamThreeScore > teamFourScore) {
+      team3.wins++;
+      team4.derrota++;
+    } else if (teamThreeScore === teamFourScore) {
+      team3.draw++;
+      team4.draw++;
+    } else {
+      team4.wins++;
+      team3.derrota++;
+    }
+    goals(team1, team2, team3, team4);
+
+    console.log(
+      `Grupa ${group}:
+       ${gameOne}
+       ${gameTwo}`
+    );
+  };
 
   
+  let grupPlayMatches = function ([...grupa], group) {
+      game(...grupa, group);
+  };
+
+  console.log("Fase de grupos - I :");
+  
+  grupPlayMatches(GroupA, "A");
+  grupPlayMatches(GroupB, "B");
+  grupPlayMatches(GroupC, "C");
+  grupPlayMatches(GroupD, "D");
+  grupPlayMatches(GroupE, "E");
+  grupPlayMatches(GroupF, "F");
+  grupPlayMatches(GroupG, "G");
+  grupPlayMatches(GroupH, "H");
+
+
+  console.log("");
+  console.log("Fase de grupos - II :");
+  grupPlayMatches(GroupA, "A");
+  grupPlayMatches(GroupB, "B");
+  grupPlayMatches(GroupC, "C");
+  grupPlayMatches(GroupD, "D");
+  grupPlayMatches(GroupE, "E");
+  grupPlayMatches(GroupF, "F");
+  grupPlayMatches(GroupG, "G");
+  grupPlayMatches(GroupH, "H");
+
+  
+
+  let sortGroups = function (group, grupa) {
+    group.sort((a, b) => b.pontos - a.pontos);
+
+    if (
+      group[0].pontos === group[1].pontos ||
+      group[2].pontos === group[3].pontos
+    ) {
+      group
+        .sort((a, b) => a.golsSofridos - b.golsSofridos)
+        .sort((a, b) => b.pontos - a.pontos);
+    }
+    console.log(grupa);
+
+    showGroupTable(group);
+  };
+
+  let sliceTeam = function (team) {
+    return team.slice(0, 2).map((el) => el.teamName);
+  };
+
+  console.log("");
+  console.log("Fase de grupos - III :");
+
+  grupPlayMatches(GroupA, "A");
+  grupPlayMatches(GroupB, "B");
+  grupPlayMatches(GroupC, "C");
+  grupPlayMatches(GroupD, "D");
+  grupPlayMatches(GroupE, "E");
+  grupPlayMatches(GroupF, "F");
+  grupPlayMatches(GroupG, "G");
+  grupPlayMatches(GroupH, "H");
+
+  console.log("");
+  sortGroups(GroupA, "Grupa A tabela:");
+
+  console.log("");
+  sortGroups(GroupB, "Grupa B tabela:");
+
+  console.log("");
+  sortGroups(GroupC, "Grupa C tabela:");
+
+  console.log("");
+  sortGroups(GroupD, "Grupa D tabela:");
+
+  console.log("");
+  sortGroups(GroupE, "Grupa E tabela:");
+
+  console.log("");
+  sortGroups(GroupF, "Grupa F tabela:");
+
+  console.log("");
+  sortGroups(GroupG, "Grupa G tabela:");
+
+  console.log("");
+  sortGroups(GroupH, "Grupa H tabela:");
+
+  groupA = sliceTeam(GroupA);
+  groupB = sliceTeam(GroupB);
+  groupC = sliceTeam(GroupC);
+  groupD = sliceTeam(GroupD);
+  groupE = sliceTeam(GroupE);
+  groupF = sliceTeam(GroupF);
+  groupG = sliceTeam(GroupG);
+  groupH = sliceTeam(GroupH);
+
+  let overtime = function (
+    teamOneScore,
+    teamTwoScore,
+    team1,
+    team2,
+    eliminationGroup
+  ) {
+    equalScoreTeamOne = Math.floor(Math.random() * 7);
+    equalScoreTeamTwo = Math.floor(Math.random() * 6);
+    penalsTeamOne = Math.floor(Math.random() * 6);
+    penalsTeamTwo = Math.floor(Math.random() * 6);
+
+    gameOne = `${team1} ${teamOneScore} : ${teamTwoScore} ${team2}`;
+
+    if (teamOneScore === teamTwoScore) {
+      `${team1} ${(teamOneScore += equalScoreTeamOne)} : ${(teamTwoScore +=
+        equalScoreTeamTwo)} ${team2}`;
+      console.log("Empate");
+
+      if (teamOneScore > teamTwoScore) {
+        eliminationGroup.push(team1);
+        console.log(`${team1} ${teamOneScore} : ${teamTwoScore} ${team2}`);
+      } else if (teamOneScore < teamTwoScore) {
+        eliminationGroup.push(team2);
+        console.log(`  ${team1} ${teamOneScore} : ${teamTwoScore} ${team2}`);
+      } else {
+        console.log("Pênaltis:") &&
+          `${team1} ${(teamOneScore += penalsTeamOne)} : ${(teamTwoScore +=
+            penalsTeamTwo)} ${team2}` &&
+          eliminationGroup.push(team2) &&
+          console.log(gameOne);
+      }
+    }
+  };
+
+  let eliminationGame = function (
+    team1,
+    team2,
+    team3,
+    team4,
+    eliminationGroup
+  ) {
+    equalScoreTeamOne = Math.floor(Math.random() * 7);
+    equalScoreTeamTwo = Math.floor(Math.random() * 7);
+
+    teamOneScore = Math.floor(Math.random() * 6);
+    teamTwoScore = Math.floor(Math.random() * 6);
+    teamThreeScore = Math.floor(Math.random() * 6);
+    teamFourScore = Math.floor(Math.random() * 6);
+
+    gameOne = `${team1} ${teamOneScore} : ${teamTwoScore} ${team2}`;
+    gameTwo = `${team3} ${teamThreeScore} : ${teamFourScore} ${team4}`;
+
+    teamOneScore > teamTwoScore && eliminationGroup.push(team1);
+    teamOneScore < teamTwoScore && eliminationGroup.push(team2);
+    teamThreeScore > teamFourScore && eliminationGroup.push(team3);
+    teamThreeScore < teamFourScore && eliminationGroup.push(team4);
+
+    console.log(gameOne);
+    console.log(gameTwo);
+
+    overtime(teamOneScore, teamTwoScore, team1, team2, eliminationGroup);
+    overtime(teamThreeScore, teamFourScore, team3, team4, eliminationGroup);
+  };
+
+  console.log("");
+  console.log("Fase Eliminatória - Oitavas de Final:");
+
+  eliminationGame(
+    groupA[0],
+    groupB[1],
+    groupA[1],
+    groupB[0],
+    eliminationGroupOne
+  );
+
+  eliminationGame(
+    groupC[0],
+    groupD[1],
+    groupC[1],
+    groupD[0],
+    eliminationGroupOne
+  );
+
+  eliminationGame(
+    groupE[0],
+    groupF[1],
+    groupE[1],
+    groupF[0],
+    eliminationGroupTwo
+  );
+  eliminationGame(
+    groupG[0],
+    groupH[1],
+    groupG[1],
+    groupH[0],
+    eliminationGroupTwo
+  );
+
+  console.log("");
+  console.log("Fase Eliminatória - Quartas de final:");
+
+  eliminationGame(
+    eliminationGroupOne[0],
+    eliminationGroupOne[1],
+    eliminationGroupOne[2],
+    eliminationGroupOne[3],
+    quarterFinalOne
+  );
+  eliminationGame(
+    eliminationGroupTwo[0],
+    eliminationGroupTwo[1],
+    eliminationGroupTwo[2],
+    eliminationGroupTwo[3],
+    quaterFinalTwo
+  );
+
+  console.log("");
+  console.log("Fase Eliminatória - Semifinal:");
+
+  eliminationGame(
+    quarterFinalOne[0],
+    quarterFinalOne[1],
+    quaterFinalTwo[0],
+    quaterFinalTwo[1],
+    finalGameTeams
+  );
+
+  let finalGame = function (team1, team2, eliminationGroup) {
+    equalScoreTeamOne = Math.floor(Math.random() * 7);
+    equalScoreTeamTwo = Math.floor(Math.random() * 7);
+
+    teamOneScore = Math.floor(Math.random() * 6);
+    teamTwoScore = Math.floor(Math.random() * 6);
+
+    gameOne = `${team1} ${teamOneScore} : ${teamTwoScore} ${team2}`;
+
+    teamOneScore > teamTwoScore && eliminationGroup.push(team1);
+    teamOneScore < teamTwoScore && eliminationGroup.push(team2);
+
+    console.log(gameOne);
+    overtime(teamOneScore, teamTwoScore, team1, team2, eliminationGroup);
+  };
+
+  console.log("");
+  console.log("Final:");
+
+  finalGame(finalGameTeams[0], finalGameTeams[1], winner);
+
+  console.log("");
+
+
+  let showWinner = function (winner) {
+    console.log(`!!! ${winner} !!!`);
+  };
+  showWinner(winner);
+};
+
+main();
